@@ -1,4 +1,4 @@
-package br.ufba.dcc.wiser.fot.storage.camel;
+package br.ufba.dcc.wiser.fot.semantic.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 

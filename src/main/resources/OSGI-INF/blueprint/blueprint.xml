@@ -19,71 +19,37 @@
  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
+	<reference id="dataBase" interface="javax.sql.DataSource"
+		availability="optional" filter="(dataSourceName=fot-gateway-local-storage)" />
+
 	<reference-list id="busList" interface="org.apache.cxf.Bus"
 		filter="(cxf.bus.id=*)" availability="optional" />
 
-	<reference id="dataBase" interface="javax.sql.DataSource" availability="optional" filter="(dataSourceName=fot-gateway-local-storage)" />
-
-	<bean id="busObj" class="br.ufba.dcc.wiser.fot.storage.MqttCxfController"
-		init-method="init" destroy-method="destroy">
+	<bean id="H2LinkedDataControllerBean" class="br.ufba.dcc.wiser.fot.semantic.H2LinkedDataController"
+		init-method="init">
 		<property name="busList" ref="busList" />
-		<property name="brokerUrl" value="${MQTTHost}" />
-		<property name="brokerPort" value="${MQTTPort}" />
-		<property name="serverId" value="${MQTTServerId}" />
-		<property name="username" value="${MQTTUsername}" />
-		<property name="password" value="${MQTTPassword}" />
-		<property name="collect" value="${CollectDataTime}" />
-		<property name="publish" value="${PublishDataTime}" />
+		<property name="fusekiURI" value="${TripleStoreURI}" />
+		<property name="baseURI" value="${BaseURIForSensorData}" />
+		<property name="dataSource" ref="dataBase" />
 	</bean>
-
-	<!-- As rotas do contexto do Camel, buscando classes de rotas do camel -->
-	<!-- <camelContext id="camel" xmlns="http://camel.apache.org/schema/blueprint"> 
-		<route> <from uri="timer://myTimer?period={{RequestDataTime}}" /> <to uri="bean:busObj?method=getServicesAndBuildMsgs" 
-		/> </route> </camelContext> -->
-	<!-- Lendo documento da pasta /etc, a partir dele voce pode setar variaveis 
-		para serem usadas em qualquer bundle. Também é definido um valor padrão caso 
-		a propriedade ou o arquivo não exista -->
-	<cm:property-placeholder persistent-id="br.ufba.dcc.wiser.fot.storage"
+ 
+	<camelContext id="camel"
+		xmlns="http://camel.apache.org/schema/blueprint">
+		<route>
+			<from uri="timer://myTimer?period={{PublishDataTime}}" />
+			<to uri="bean:H2LinkedDataControllerBean?method=buildTriples" />
+		</route>
+	</camelContext>
+ 
+	<cm:property-placeholder persistent-id="br.ufba.dcc.wiser.fot.semantic"
 		update-strategy="reload">
 		<cm:default-properties>
-			<cm:property name="MQTTHost" value="localhost" />
-			<cm:property name="MQTTPort" value="1883" />
-			<cm:property name="MQTTUsername" value="" />
-			<cm:property name="MQTTPassword" value="" />
-			<cm:property name="MQTTServerId" value="FoTGatway" />
-			<cm:property name="MQTTServerId" value="FoTGatway" />
-			<cm:property name="TripleStoreURI" value="http://localhost:3030/IoTsensorDB/" />
+			<cm:property name="TripleStoreURI" value="http://localhost:3030/smartUFBA/" />
 			<cm:property name="BaseURIForSensorData" value="http://example.org/" />
-			<cm:property name="RequestDataTime" value="3000" />
-			<cm:property name="CollectDataTime" value="5000" />
-			<cm:property name="PublishDataTime" value="30000" />
+			<cm:property name="aggregationPolices" value="true" />
+			<cm:property name="PublishDataTime" value="60000" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 
-<!-- 
-	
-	<bean id="mqttFusekiControllerBean" class="br.ufba.dcc.wiser.fot.storage.MqttFusekiController"
-		init-method="init" destroy-method="disconnect">
-		<property name="brokerUrl" value="${MQTTHost}" />
-		<property name="brokerPort" value="${MQTTPort}" />
-		<property name="serverId" value="${MQTTServerId}" />
-		<property name="username" value="${MQTTUsername}" />
-		<property name="password" value="${MQTTPassword}" />
-		<property name="fusekiURI" value="${TripleStoreURI}" />
-		<property name="baseURI" value="${BaseURIForSensorData}" />
-	</bean>
-	
--->
-
-	<bean id="MqttH2StorageControllerBean" class="br.ufba.dcc.wiser.fot.storage.MqttH2StorageController" init-method="init" destroy-method="disconnect">
-		<property name="brokerUrl" value="${MQTTHost}" />
-		<property name="brokerPort" value="${MQTTPort}" />
-		<property name="serverId" value="${MQTTServerId}" />
-		<property name="username" value="${MQTTUsername}" />
-		<property name="password" value="${MQTTPassword}" />
-		<property name="fusekiURI" value="${TripleStoreURI}" />
-		<property name="baseURI" value="${BaseURIForSensorData}" />
-		<property name="dataSource" ref="dataBase"/>
-	</bean>
 
 </blueprint>

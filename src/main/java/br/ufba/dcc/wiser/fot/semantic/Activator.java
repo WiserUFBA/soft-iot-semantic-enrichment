@@ -1,4 +1,4 @@
-package br.ufba.dcc.wiser.fot.storage;
+package br.ufba.dcc.wiser.fot.semantic;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -9,11 +9,11 @@ public class Activator implements BundleActivator {
 
 
     public void start(BundleContext bc) throws Exception {
-        System.out.println("Starting the bundle FoT Storage");
+        System.out.println("Starting the bundle FoT Semantic Data");
     }
 
     public void stop(BundleContext bc) throws Exception {
-        System.out.println("Stopping the bundle FoT Storage");
+        System.out.println("Stopping the bundle FoT Semantic Data");
     }
 
 }

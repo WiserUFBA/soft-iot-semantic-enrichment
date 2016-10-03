@@ -1,4 +1,4 @@
-package br.ufba.dcc.wiser.fot.storage.schema;
+package br.ufba.dcc.wiser.fot.semantic.schema;
 
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.ObjectProperty;
