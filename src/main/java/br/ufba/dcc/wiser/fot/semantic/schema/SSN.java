@@ -269,5 +269,9 @@ public class SSN {
     
     public static final ObjectProperty madeObservation = m_model.createObjectProperty("http://purl.oclc.org/NET/ssnx/ssn#madeObservation");
     
+    public static final ObjectProperty startTime = m_model.createObjectProperty("http://purl.oclc.org/NET/ssnx/ssn#startTime");
+    
+    public static final ObjectProperty endTime = m_model.createObjectProperty("http://purl.oclc.org/NET/ssnx/ssn#endTime");
+    
     
 }

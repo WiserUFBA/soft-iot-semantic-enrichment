@@ -31,6 +31,9 @@
 		<property name="fusekiURI" value="${TripleStoreURI}" />
 		<property name="baseURI" value="${BaseURIForSensorData}" />
 		<property name="dataSource" ref="dataBase" />
+		<property name="aggregationPolices" value="${aggregationPolices}" />
+		<property name="aggregationTime" value="${aggregationTime}" />
+		
 	</bean>
  
 	<camelContext id="camel"
@@ -48,6 +51,7 @@
 			<cm:property name="BaseURIForSensorData" value="http://example.org/" />
 			<cm:property name="aggregationPolices" value="true" />
 			<cm:property name="PublishDataTime" value="60000" />
+			<cm:property name="aggregationTime" value="60000" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 

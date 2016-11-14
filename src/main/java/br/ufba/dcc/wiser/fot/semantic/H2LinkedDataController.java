@@ -48,6 +48,7 @@ public class H2LinkedDataController {
 	private boolean aggregationPolices;
 	private DataSource dataSource;
 	private List<Bus> busList;
+	private int aggregationTime;
 
 	public void init() {
 
@@ -112,7 +113,9 @@ public class H2LinkedDataController {
 							} else {
 								System.out.println("NO lastID");
 								this.lastId.put(deviceName + "_" + sensorName,
-										486);
+										0);
+								stmt.execute("INSERT INTO semantic_registered_id_sensors (sensor_name,device_name, last_id)"
+										+ " VALUES ('" + sensorName + "','" + deviceName + "',0)");
 							}
 						} else {
 							System.out.println("ERROR: Service " + qname
@@ -144,7 +147,8 @@ public class H2LinkedDataController {
 		System.out.println("build triples...");
 		try {
 			dbConnection = this.dataSource.getConnection();
-			Statement stmt = dbConnection.createStatement();
+			Statement stmt = dbConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, 
+					   ResultSet.CONCUR_READ_ONLY);
 			for (Bus b : busList) {
 				ServerRegistry reg = b.getExtension(ServerRegistry.class);
 				List<Server> servers = reg.getServers();
@@ -169,10 +173,22 @@ public class H2LinkedDataController {
 									+ sensorName + "'" + " AND id > "
 									+ this.lastId.get(deviceName + "_" + sensorName)
 									+ " ORDER BY time ASC";
-							System.out.println(query);
+							//System.out.println(query);
 							ResultSet rs = stmt.executeQuery(query);
-							System.out.println(buildSemanticDataObj(rs, sensorName).size());
 							
+							if (rs.isBeforeFirst()){
+								Model model = buildSemanticDataObj(rs, sensorName);
+								updateTripleStore(model, this.fusekiURI);
+								if (rs.isAfterLast() ){
+									rs.previous();
+									this.lastId.put(deviceName + "_" + sensorName, rs.getInt(1));
+									System.out.println("-----> LAST ID: " + rs.getInt(1) );
+									Statement stmtWrite = dbConnection.createStatement();
+									stmtWrite.execute("UPDATE semantic_registered_id_sensors SET "
+											+ "last_id=" + rs.getInt(1) + " WHERE sensor_name='" +
+											sensorName + "' AND device_name='" + deviceName + "'");
+								}
+							}
 						}
 					}
 				}
@@ -183,8 +199,8 @@ public class H2LinkedDataController {
 			e.printStackTrace();
 		}
 	}
-
-	private List<SemanticData> buildSemanticDataObj(ResultSet rs, String sensorType) throws SQLException {
+	
+	private Model buildSemanticDataObj(ResultSet rs, String sensorType) throws SQLException {
 		List<SemanticData> listData = new ArrayList<SemanticData>();
 		if (this.aggregationPolices) {
 			System.out.println("building triples with aggregation polices...");
@@ -199,7 +215,8 @@ public class H2LinkedDataController {
 		}
 		Model model = buildFiestaIoTTriples(listData);
 		model.write(System.out, "RDFXML");
-		return listData;
+		
+		return model;
 	}
 	
 	private Model buildFiestaIoTTriples(List<SemanticData> listData){
@@ -222,20 +239,30 @@ public class H2LinkedDataController {
 					+ "sensorOutput_" + beginTimestamp + endTimestamp, SSN.SensorOutput);
 			sensorOutput.addProperty(SSN.hasValue, observationValue);
 			
-			Individual timeInterval = model.createIndividual(this.baseURI
-					+ "timeInterval" + beginTimestamp + endTimestamp, FiestaIoT.classTimeInterval);
-			Calendar cal = Calendar.getInstance();
-			XSDDateTime test = new XSDDateTime(cal);
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+			Individual startTimeInterval = model.createIndividual(this.baseURI
+					+ "startTimeInterval" + beginTimestamp + endTimestamp, FiestaIoT.classTimeInterval);
+			Individual endTimeInterval = model.createIndividual(this.baseURI
+					+ "endTimeInterval" + beginTimestamp + endTimestamp, FiestaIoT.classTimeInterval);
+			Calendar beginCal = Calendar.getInstance();
+			Calendar endCal = Calendar.getInstance();
+			beginCal.setTimeInMillis(data.getBeginDate().getTime());
+			XSDDateTime beginDateTime = new XSDDateTime(beginCal);
+			endCal.setTimeInMillis(data.getEndDate().getTime());
+			XSDDateTime endDateTime = new XSDDateTime(endCal);
+			
+			//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 			//String dateFormated = sdf.format(data.getBeginDate());
-			//Literal dateLiteral = model.createTypedLiteral(test,
-			//		XSDDatatype.XSDdateTime);
+			Literal dateLiteral = model.createTypedLiteral(beginDateTime,
+					XSDDatatype.XSDdateTime);
+			startTimeInterval.addLiteral(FiestaIoT.hasIntervalDate, dateLiteral);
 			
-			timeInterval.addLiteral(FiestaIoT.hasIntervalDate, test);
+			dateLiteral = model.createTypedLiteral(endDateTime,
+					XSDDatatype.XSDdateTime);
+			endTimeInterval.addLiteral(FiestaIoT.hasIntervalDate, dateLiteral);
 			
-			unixTime = System.currentTimeMillis() / 1000L;
 			Individual observation = model.createIndividual(this.baseURI + "obs_" + beginTimestamp + endTimestamp, SSN.Observation);
-			observation.addProperty(SSN.observationSamplingTime, timeInterval);
+			observation.addProperty(SSN.startTime, startTimeInterval);
+			observation.addProperty(SSN.endTime, endTimeInterval);
 			observation.addProperty(SSN.observationResult, sensorOutput);
 
 			Resource sensor = model.createResource(SSN.NS + sensorFullName);
@@ -251,16 +278,13 @@ public class H2LinkedDataController {
 			Integer means = Integer.valueOf(rs.getString(4));
 			Timestamp beginDate = rs.getTimestamp(5);
 			Timestamp endDate = rs.getTimestamp(5);
-			int hour = rs.getTimestamp(5).getHours();
-			int minutes = rs.getTimestamp(5).getMinutes();
 			int count=1;
 			if (rs.isLast()){
 				SemanticData dt = new SemanticData(rs.getString(3), rs.getString(2), means.toString(), beginDate, endDate);
 				listData.add(dt);
 			}
 			while (rs.next()) {
-				if(hour != rs.getTimestamp(5).getHours() ||
-				   minutes != rs.getTimestamp(5).getMinutes()){
+				if((endDate.getTime() - beginDate.getTime()) > this.aggregationTime){
 					means /= count;
 					SemanticData dt = new SemanticData(rs.getString(3), rs.getString(2), means.toString(), beginDate, endDate);
 					listData.add(dt);
@@ -282,15 +306,13 @@ public class H2LinkedDataController {
 			Float sum = Float.valueOf(rs.getString(4));
 			Timestamp beginDate = rs.getTimestamp(5);
 			Timestamp endDate = rs.getTimestamp(5);
-			int hour = rs.getTimestamp(5).getHours();
-			int minutes = rs.getTimestamp(5).getMinutes();
+			
 			if (rs.isLast()){
 				SemanticData dt = new SemanticData(rs.getString(3), rs.getString(2), sum.toString(), beginDate, endDate);
 				listData.add(dt);
 			}
 			while (rs.next()) {
-				if(hour != rs.getTimestamp(5).getHours() ||
-				   minutes != rs.getTimestamp(5).getMinutes()){
+				if((endDate.getTime() - beginDate.getTime()) > this.aggregationTime){
 					SemanticData dt = new SemanticData(rs.getString(3), rs.getString(2), sum.toString(), beginDate, endDate);
 					listData.add(dt);
 					rs.previous();
@@ -404,7 +426,8 @@ public class H2LinkedDataController {
 		return baseURI;
 	}
 
-	public void setAggregationPolices(boolean aggregationPolices) {
+	public void setaggregationPolices(boolean aggregationPolices) {
+		
 		this.aggregationPolices = aggregationPolices;
 	}
 
@@ -416,4 +439,10 @@ public class H2LinkedDataController {
 		this.busList = busList;
 	}
 
+	public void setAggregationTime(int aggregationTime) {
+		this.aggregationTime = aggregationTime;
+	}
+
+	
+	
 }
