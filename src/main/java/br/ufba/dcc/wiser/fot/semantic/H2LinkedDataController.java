@@ -149,7 +149,9 @@ public class H2LinkedDataController {
 			dbConnection = this.dataSource.getConnection();
 			Statement stmt = dbConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, 
 					   ResultSet.CONCUR_READ_ONLY);
+			System.out.println("BLAAA");
 			for (Bus b : busList) {
+				
 				ServerRegistry reg = b.getExtension(ServerRegistry.class);
 				List<Server> servers = reg.getServers();
 				for (Server serv : servers) {
@@ -182,7 +184,7 @@ public class H2LinkedDataController {
 								if (rs.isAfterLast() ){
 									rs.previous();
 									this.lastId.put(deviceName + "_" + sensorName, rs.getInt(1));
-									System.out.println("-----> LAST ID: " + rs.getInt(1) );
+									System.out.println(deviceName + "_" + sensorName + "-----> LAST ID: " + rs.getInt(1) );
 									Statement stmtWrite = dbConnection.createStatement();
 									stmtWrite.execute("UPDATE semantic_registered_id_sensors SET "
 											+ "last_id=" + rs.getInt(1) + " WHERE sensor_name='" +
