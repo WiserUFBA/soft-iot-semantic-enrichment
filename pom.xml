@@ -5,10 +5,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>FoT-GatewaySemanticData</name>
-	<artifactId>fot-gateway-semantic-data</artifactId>
-	<description> FoT Gateway Semantic Data Module</description>
-	<groupId>br.ufba.dcc.wiser</groupId>
+	<name>FoT-Gateway-Semantic-Enrichment</name>
+	<artifactId>fot-gateway-semantic-enrichment</artifactId>
+	<description>Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semantic Web descriptions.</description>
+	<groupId>br.ufba.dcc.wiser.soft_iot</groupId>
 	<version>1.0.0</version>
 	<packaging>bundle</packaging>
 
@@ -28,9 +28,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>br.ufba.dcc.wiser.fot.semantic.Activator</Bundle-Activator>
 						<Export-Package>br.ufba.dcc.wiser.fot.semantic</Export-Package>
-						<Embed-Dependency>mqtt-client;scope=compile|runtimeinline=false</Embed-Dependency>
+						<Embed-Dependency>scope=compile|runtimeinline=false</Embed-Dependency>
 						<Embed-Directory>target/dependency</Embed-Directory>
 						<Embed-StripGroup>true</Embed-StripGroup>
 						<Embed-Transitive>true</Embed-Transitive>
@@ -84,15 +83,19 @@
 
 	<!-- Dependencies -->
 
-	<repositories>
-		<repository>
-			<id>paho-mqtt-client</id>
-			<name>Paho MQTT Client</name>
-			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
+		<dependency>
+			<groupId>br.ufba.dcc.wiser.soft_iot</groupId>
+			<artifactId>fot-gateway-mapping-devices</artifactId>
+			<version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>br.ufba.dcc.wiser.soft_iot</groupId>
+			<artifactId>fot-gateway-local-storage</artifactId>
+			<version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
@@ -103,11 +106,6 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20140107</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-core</artifactId>
-			<version>3.1.4</version>
 		</dependency>
 		<!--Camel -->
 		<dependency>
@@ -124,11 +122,6 @@
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-spring</artifactId>
 			<version>2.16.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.paho</groupId>
-			<artifactId>mqtt-client</artifactId>
-			<version>0.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>

@@ -1,4 +1,4 @@
-package br.ufba.dcc.wiser.fot.semantic;
+package br.ufba.dcc.wiser.soft_iot.semantic_enrichment;
 
 import java.sql.Timestamp;
 import java.util.Date;

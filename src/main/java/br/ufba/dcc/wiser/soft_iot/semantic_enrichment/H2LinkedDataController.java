@@ -1,4 +1,4 @@
-package br.ufba.dcc.wiser.fot.semantic;
+package br.ufba.dcc.wiser.soft_iot.semantic_enrichment;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -37,8 +37,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
-import br.ufba.dcc.wiser.fot.semantic.schema.FiestaIoT;
-import br.ufba.dcc.wiser.fot.semantic.schema.SSN;
+import br.ufba.dcc.wiser.soft_iot.ontology_schema.FiestaIoT;
+import br.ufba.dcc.wiser.soft_iot.ontology_schema.SSN;
 
 public class H2LinkedDataController {
 
