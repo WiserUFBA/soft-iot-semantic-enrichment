@@ -1,9 +1,9 @@
 package br.ufba.dcc.wiser.soft_iot.ontology_schema;
 
+
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntModel;
-/* CVS $Id: $ */
 import org.apache.jena.rdf.model.*;
  
 /**
@@ -12,7 +12,7 @@ import org.apache.jena.rdf.model.*;
  */
 public class SSN {
 	
-	static String SSN = "http://purl.oclc.org/NET/ssnx/ssn#";
+static String SSN = "http://purl.oclc.org/NET/ssnx/ssn#";
 	
     /** <p>The RDF model that holds the vocabulary terms</p> */
     private static OntModel m_model = ModelFactory.createOntologyModel();

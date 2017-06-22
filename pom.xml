@@ -28,8 +28,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>br.ufba.dcc.wiser.fot.semantic</Export-Package>
-						<Embed-Dependency>scope=compile|runtimeinline=false</Embed-Dependency>
+						<Export-Package>br.ufba.dcc.wiser.soft_iot.semantic_enrichment</Export-Package>
 						<Embed-Directory>target/dependency</Embed-Directory>
 						<Embed-StripGroup>true</Embed-StripGroup>
 						<Embed-Transitive>true</Embed-Transitive>
@@ -101,11 +100,6 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>4.3.0</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20140107</version>
 		</dependency>
 		<!--Camel -->
 		<dependency>

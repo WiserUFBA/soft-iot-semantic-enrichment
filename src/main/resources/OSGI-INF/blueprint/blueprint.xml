@@ -19,39 +19,37 @@
  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
-	<reference id="dataBase" interface="javax.sql.DataSource"
-		availability="optional" filter="(dataSourceName=fot-gateway-local-storage)" />
+	<reference id="connectedDevices" interface="br.ufba.dcc.wiser.soft_iot.mapping_devices.Controller"
+		availability="optional" />
+		
+	<reference id="localData" interface="br.ufba.dcc.wiser.soft_iot.local_storage.LocalDataController"
+		availability="optional" />
 
-	<reference-list id="busList" interface="org.apache.cxf.Bus"
-		filter="(cxf.bus.id=*)" availability="optional" />
-
-	<bean id="H2LinkedDataControllerBean" class="br.ufba.dcc.wiser.fot.semantic.H2LinkedDataController"
+	<bean id="H2LinkedDataControllerBean" class="br.ufba.dcc.wiser.soft_iot.semantic_enrichment.H2LinkedDataController"
 		init-method="init">
-		<property name="busList" ref="busList" />
+		<property name="fotDevices" ref="connectedDevices" />
+		<property name="localDataController" ref="localData" />
 		<property name="fusekiURI" value="${TripleStoreURI}" />
 		<property name="baseURI" value="${BaseURIForSensorData}" />
-		<property name="dataSource" ref="dataBase" />
-		<property name="aggregationPolices" value="${aggregationPolices}" />
-		<property name="aggregationTime" value="${aggregationTime}" />
-		
+		<property name="nameSpacePrefix" value="${namespacePrefixForNewData}" />
+		<property name="debugModeValue" value="${debugMode}" />
 	</bean>
  
 	<camelContext id="camel"
 		xmlns="http://camel.apache.org/schema/blueprint">
 		<route>
-			<from uri="timer://myTimer?period={{PublishDataTime}}" />
+			<from uri="timer://myTimer?period={{TimeToExecuteEnrichmentProcedure}}" />
 			<to uri="bean:H2LinkedDataControllerBean?method=buildTriples" />
 		</route>
 	</camelContext>
- 
-	<cm:property-placeholder persistent-id="br.ufba.dcc.wiser.fot.semantic"
+  
+	<cm:property-placeholder persistent-id="br.ufba.dcc.wiser.soft_iot.semantic_enrichment"
 		update-strategy="reload">
 		<cm:default-properties>
 			<cm:property name="TripleStoreURI" value="http://localhost:3030/smartUFBA/" />
 			<cm:property name="BaseURIForSensorData" value="http://example.org/" />
-			<cm:property name="aggregationPolices" value="true" />
-			<cm:property name="PublishDataTime" value="60000" />
-			<cm:property name="aggregationTime" value="60000" />
+			<cm:property name="namespacePrefixForNewData" value="soft_iot" />
+			<cm:property name="TimeToExecuteEnrichmentProcedure" value="600000" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 
