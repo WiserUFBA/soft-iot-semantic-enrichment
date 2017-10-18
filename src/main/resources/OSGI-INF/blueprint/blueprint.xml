@@ -32,6 +32,7 @@
 		<property name="fusekiURI" value="${TripleStoreURI}" />
 		<property name="baseURI" value="${BaseURIForSensorData}" />
 		<property name="nameSpacePrefix" value="${namespacePrefixForNewData}" />
+		<property name="onlyForAggregatedData" value="${EnrichmentOnlyAggregatedData}" />
 		<property name="debugModeValue" value="${debugMode}" />
 	</bean>
  
@@ -50,6 +51,8 @@
 			<cm:property name="BaseURIForSensorData" value="http://example.org/" />
 			<cm:property name="namespacePrefixForNewData" value="soft_iot" />
 			<cm:property name="TimeToExecuteEnrichmentProcedure" value="600000" />
+			<cm:property name="EnrichmentOnlyAggregatedData" value="false" />
+			<cm:property name="debugMode" value="false" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 

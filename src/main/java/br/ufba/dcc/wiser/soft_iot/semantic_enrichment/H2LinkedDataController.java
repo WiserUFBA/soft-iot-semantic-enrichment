@@ -1,6 +1,7 @@
 package br.ufba.dcc.wiser.soft_iot.semantic_enrichment;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,7 +42,9 @@ public class H2LinkedDataController {
 	private HashMap<String, Date> lastDateSensor;
 	private Controller fotDevices;
 	private LocalDataController localDataController;
+	private boolean onlyForAggregatedData;
 	private boolean debugModeValue;
+	
 
 	public void init() {
 		OntModel model = ModelFactory.createOntologyModel();
@@ -49,17 +52,23 @@ public class H2LinkedDataController {
 		boolean newDevice = false;
 		
 		for(Device device : fotDevices.getListDevices()){
-			if (!deviceExistsInbase(device.getId())){
-				try {
-					model = enrichDevice(device, model);
-					newDevice = true;
-				} catch (JsonParseException e) {
-					e.printStackTrace();
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+			System.out.println("======= DEVICE: " + device.getId());
+			try {
+				if (!deviceExistsInbase(device.getId())){
+					try {
+						model = enrichDevice(device, model);
+						newDevice = true;
+					} catch (JsonParseException e) {
+						e.printStackTrace();
+					} catch (JsonMappingException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+			} catch (ConnectException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		if (newDevice){
@@ -128,29 +137,36 @@ public class H2LinkedDataController {
 		}
 	}
 
-	private boolean deviceExistsInbase(String id){
-		String askQuery = "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>" +
-							"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" + 
-							"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-							"PREFIX iot-lite: <http://purl.oclc.org/NET/UNIS/fiware/iot-lite#>" +
-							"ASK" +
-							"WHERE {" +  
-							"?device rdf:type 	ssn:Device ." +
-							"?device iot-lite:id \"" + id +"\"" +	
+	private boolean deviceExistsInbase(String id) throws ConnectException{
+		String askQuery = "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> \n" +
+							"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \n" + 
+							"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+							"PREFIX iot-lite: <http://purl.oclc.org/NET/UNIS/fiware/iot-lite#> \n" +
+							"ASK \n" +
+							"WHERE { \n" +  
+							"?device rdf:type 	ssn:Device . \n" +
+							"?device iot-lite:id \"" + id +"\" \n" +	
 							"}";
+		System.out.println(askQuery);
 		Query query = QueryFactory.create(askQuery);
 		QueryExecution qExe = QueryExecutionFactory.sparqlService(this.fusekiURI, query);
-		
+		System.out.println("AQUI!");
 		boolean result = qExe.execAsk();
 		printlnDebug("Device of id = " + id + " exists in base = " + result);
 		return result;
+		
 	}
 
 	public void buildTriples() {
 		for(Device device : fotDevices.getListDevices()){
 			for(Sensor sensor : device.getSensors()){
 				Date lastId = this.lastDateSensor.get(device.getId() + "_" + sensor.getId());
-				List<SensorData> sensorData = localDataController.getSensorDataByLastDateTime(device, sensor, lastId);
+				List<SensorData> sensorData;
+				if(onlyForAggregatedData){
+					sensorData = localDataController.getSensorDataByAggregationStatusAndDate(device, sensor,1, lastId);
+				}else{
+					sensorData = localDataController.getSensorDataByLastDateTime(device, sensor, lastId);
+				}
 				if(!sensorData.isEmpty()){
 					OntModel model = ModelFactory.createOntologyModel();
 					model = setNSPrefixies(model);
@@ -159,6 +175,7 @@ public class H2LinkedDataController {
 					updateTripleStore(model, this.fusekiURI);
 					Date newLastDate = sensorData.get(sensorData.size()-1).getStartTime();
 					localDataController.updateLastSensorDataEnriched(device, sensor, newLastDate);
+					this.lastDateSensor.put(device.getId() + "_" + sensor.getId(), newLastDate);
 				}
 			}
 		}
@@ -638,6 +655,10 @@ public class H2LinkedDataController {
 			System.out.println(str);
 	}
 
+	public void setOnlyForAggregatedData(boolean onlyForAggregatedData) {
+		this.onlyForAggregatedData = onlyForAggregatedData;
+	}
+
 	public void setFusekiURI(String fusekiURI) {
 		this.fusekiURI = fusekiURI;
 	}
@@ -665,6 +686,4 @@ public class H2LinkedDataController {
 	public void setDebugModeValue(boolean debugModeValue) {
 		this.debugModeValue = debugModeValue;
 	}
-	
-	
 }
