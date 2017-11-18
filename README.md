@@ -1,25 +1,13 @@
 # FoT-Gateway-Semantic-Enrichment
 
-Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semantic Web descriptions. 
+## Introduction
 
-## Deploy to Maven Repo
-
-To deploy this repo into our custom maven repo, change pom according to the new version and after that execute the following command. Please ensure that both wiser-mvn-repo and this repo are on the same folder.
-
-```sh
-mvn -DaltDeploymentRepository=release-repo::default::file:../wiser-mvn-repo/releases/ deploy
-```
+Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semantic Web descriptions.
 
 ## Installation
 
-To install this bundle using our custom maven support execute the following commands in Karaf Shell:
 
-```sh
-config:edit org.ops4j.pax.url.mvn 
-config:property-append org.ops4j.pax.url.mvn.repositories ", https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases@id=wiser"
-config:update
-mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-semantic-enrichment/1.0.0
-```
+
 FoT-Gateway-Semantic-Enrichment needs of Jena 3.1.0 library to run correctly. This library does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *fot-gateway-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
 ```
 fot-gateway-semantic-enrichmen/jena-gateway.kar/target/jena-gateway.kar-1.0-SNAPSHOT.kar
@@ -27,6 +15,18 @@ fot-gateway-semantic-enrichmen/jena-gateway.kar/target/jena-gateway.kar-1.0-SNAP
 to:
 ```
 <servicemix_directory>/deploy
+```
+This module depends of modules [fot-gateway-mapping-devices](https://github.com/WiserUFBA/fot-gateway-mapping-devices) and [fot-gateway-local-storage](https://github.com/WiserUFBA/fot-gateway-local-storage). They need to be installed and started before FoT-Gateway-Semantic-Enrichment.
+
+To install this bundle using our custom maven support execute the following commands in Karaf Shell:
+
+```sh
+config:edit org.ops4j.pax.url.mvn 
+config:property-append org.ops4j.pax.url.mvn.repositories ", https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases@id=wiser"
+config:update
+mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-mapping-devices/1.0.0
+mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-local-storage/1.0.0
+mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-semantic-enrichment/1.0.0
 ```
 
 Finally, for correct execution of module you need to copy and to set configuration of file:
@@ -37,6 +37,15 @@ to:
 ```
 <servicemix_directory>/etc
 ```
+
+## Deploy to Maven Repo
+
+To deploy this repo into our custom maven repo, change pom according to the new version and after that execute the following command. Please ensure that both wiser-mvn-repo and this repo are on the same folder.
+
+```sh
+mvn -DaltDeploymentRepository=release-repo::default::file:../wiser-mvn-repo/releases/ deploy
+```
+
 
 
 ## Support and development
