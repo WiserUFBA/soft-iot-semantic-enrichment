@@ -36,7 +36,7 @@ To install this bundle using our custom maven support execute the following comm
 config:edit org.ops4j.pax.url.mvn 
 config:property-append org.ops4j.pax.url.mvn.repositories ", https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases@id=wiser"
 config:update
-bundle:install -s mvn:$$GROUP_ID$$/$$ARTIFACT_ID$$/$$VERSION
+mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-semantic-enrichment/1.0.0
 ```
 
 ## Support and development
