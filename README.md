@@ -1,4 +1,4 @@
-# FoT-Gatway-Semantic-Data
+# FoT-Gateway-Semantic-Data
 
 Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semantic Web descriptions. 
 
