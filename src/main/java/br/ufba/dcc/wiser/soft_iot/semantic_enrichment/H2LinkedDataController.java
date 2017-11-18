@@ -158,8 +158,11 @@ public class H2LinkedDataController {
 	}
 
 	public void buildTriples() {
+		System.out.println("Starting procedure to enrich sensor data...");
+		System.out.println(this.fusekiURI);
 		for(Device device : fotDevices.getListDevices()){
 			for(Sensor sensor : device.getSensors()){
+				System.out.println("sensor: " + sensor);
 				Date lastId = this.lastDateSensor.get(device.getId() + "_" + sensor.getId());
 				List<SensorData> sensorData;
 				if(onlyForAggregatedData){
@@ -167,6 +170,7 @@ public class H2LinkedDataController {
 				}else{
 					sensorData = localDataController.getSensorDataByLastDateTime(device, sensor, lastId);
 				}
+				System.out.println(sensorData.size());
 				if(!sensorData.isEmpty()){
 					OntModel model = ModelFactory.createOntologyModel();
 					model = setNSPrefixies(model);
