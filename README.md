@@ -24,9 +24,9 @@ To install this bundle using our custom maven support execute the following comm
 config:edit org.ops4j.pax.url.mvn 
 config:property-append org.ops4j.pax.url.mvn.repositories ", https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases@id=wiser"
 config:update
-mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-mapping-devices/1.0.0
-mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-local-storage/1.0.0
-mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-semantic-enrichment/1.0.0
+bundle:install mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-mapping-devices/1.0.0
+bundle:install mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-local-storage/1.0.0
+bundle:install mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-semantic-enrichment/1.0.0
 ```
 
 Finally, for correct execution of module you need to copy and to set configuration of file:
