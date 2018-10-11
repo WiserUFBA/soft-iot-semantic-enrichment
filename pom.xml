@@ -5,8 +5,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>FoT-Gateway-Semantic-Enrichment</name>
-	<artifactId>fot-gateway-semantic-enrichment</artifactId>
+	<name>SOFT-IoT-Semantic-Enrichment</name>
+	<artifactId>soft-iot-semantic-enrichment</artifactId>
 	<description>Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semantic Web descriptions.</description>
 	<groupId>br.ufba.dcc.wiser.soft_iot</groupId>
 	<version>1.0.0</version>
