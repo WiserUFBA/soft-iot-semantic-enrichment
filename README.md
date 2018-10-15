@@ -1,4 +1,4 @@
-# FoT-Gateway-Semantic-Enrichment
+# SOFT-IoT-Semantic-Enrichment
 
 ## Introduction
 
@@ -8,7 +8,7 @@ Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semanti
 
 
 
-FoT-Gateway-Semantic-Enrichment needs of Jena 3.1.0 library to run correctly. This library does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *fot-gateway-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
+FoT-Gateway-Semantic-Enrichment needs of Jena 3.1.0 library to run correctly. This library does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *soft-iot-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
 ```
 fot-gateway-semantic-enrichmen/jena-gateway.kar/target/jena-gateway.kar-1.0-SNAPSHOT.kar
 ```
@@ -16,7 +16,7 @@ to:
 ```
 <servicemix_directory>/deploy
 ```
-This module depends of modules [fot-gateway-mapping-devices](https://github.com/WiserUFBA/fot-gateway-mapping-devices) and [fot-gateway-local-storage](https://github.com/WiserUFBA/fot-gateway-local-storage). They need to be installed and started before FoT-Gateway-Semantic-Enrichment.
+This module depends of modules [soft-iot-mapping-devices](https://github.com/WiserUFBA/soft-iot-mapping-devices) and [soft-iot-local-storage](https://github.com/WiserUFBA/soft-iot-local-storage). They need to be installed and started before SOFT-IoT-Semantic-Enrichment.
 
 To install this bundle using our custom maven support execute the following commands in Karaf Shell:
 
@@ -24,9 +24,9 @@ To install this bundle using our custom maven support execute the following comm
 config:edit org.ops4j.pax.url.mvn 
 config:property-append org.ops4j.pax.url.mvn.repositories ", https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases@id=wiser"
 config:update
-bundle:install mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-mapping-devices/1.0.0
-bundle:install mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-local-storage/1.0.0
-bundle:install mvn:br.ufba.dcc.wiser.soft_iot/fot-gateway-semantic-enrichment/1.0.0
+bundle:install mvn:br.ufba.dcc.wiser.soft_iot/soft-iot-mapping-devices/1.0.0
+bundle:install mvn:br.ufba.dcc.wiser.soft_iot/soft-iot-local-storage/1.0.0
+bundle:install mvn:br.ufba.dcc.wiser.soft_iot/soft-iot-semantic-enrichment/1.0.0
 ```
 
 Finally, for correct execution of module you need to copy and to set configuration of file:
