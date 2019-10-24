@@ -10,7 +10,7 @@ Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semanti
 
 FoT-Gateway-Semantic-Enrichment needs of Jena 3.1.0 library to run correctly. This library does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *soft-iot-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
 ```
-fot-gateway-semantic-enrichmen/jena-gateway.kar/target/jena-gateway.kar-1.0-SNAPSHOT.kar
+soft-iot-semantic-enrichment/jena-gateway.kar/target/jena-gateway.kar-1.0-SNAPSHOT.kar
 ```
 to:
 ```
@@ -31,7 +31,7 @@ bundle:install mvn:br.ufba.dcc.wiser.soft_iot/soft-iot-semantic-enrichment/1.0.0
 
 Finally, for correct execution of module you need to copy and to set configuration of file:
 ```
-fot-gateway-semantic-enrichment/src/main/resources/br.ufba.dcc.wiser.soft_iot.semantic_enrichment.cfg
+soft-iot-semantic-enrichment/src/main/resources/br.ufba.dcc.wiser.soft_iot.semantic_enrichment.cfg
 ```
 to:
 ```
