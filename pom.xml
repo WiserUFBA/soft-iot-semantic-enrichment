@@ -85,13 +85,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>br.ufba.dcc.wiser.soft_iot</groupId>
-			<artifactId>fot-gateway-mapping-devices</artifactId>
+			<artifactId>soft-iot-mapping-devices</artifactId>
 			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>br.ufba.dcc.wiser.soft_iot</groupId>
-			<artifactId>fot-gateway-local-storage</artifactId>
+			<artifactId>soft-iot-local-storage</artifactId>
 			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
