@@ -8,7 +8,7 @@ Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semanti
 
 
 
-soft-iot-semantic-enrichment needs of Jena 3.1.0 library to run correctly. This library has some dependencies that should be installed:  does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *soft-iot-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
+soft-iot-semantic-enrichment needs Jena 3.1.0 library to run correctly. This library has some dependencies that should be installed:
 ```
 bundle:install mvn:com.github.andrewoma.dexx/collection/0.6
 bundle:install mvn:com.github.jsonld-java/jsonld-java/0.8.2
