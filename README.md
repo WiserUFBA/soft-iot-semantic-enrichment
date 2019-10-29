@@ -8,17 +8,29 @@ Module of SOFT-IoT plataform to enrich sensor data, in FoT-Gateway, with Semanti
 
 
 
-FoT-Gateway-Semantic-Enrichment needs of Jena 3.1.0 library to run correctly. This library does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *soft-iot-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
+soft-iot-semantic-enrichment needs of Jena 3.1.0 library to run correctly. This library has some dependencies that should be installed:  does not have a stable version of bundle jena-osgi. Thus, we need install it manually through the compilated version in directory *soft-iot-semantic-enrichmen/jena-gateway.kar/*. So, we need copy:
 ```
-soft-iot-semantic-enrichment/jena-gateway.kar/target/jena-gateway.kar-1.0-SNAPSHOT.kar
-```
-to:
-```
-<servicemix_directory>/deploy
-```
-This module depends of modules [soft-iot-mapping-devices](https://github.com/WiserUFBA/soft-iot-mapping-devices) and [soft-iot-local-storage](https://github.com/WiserUFBA/soft-iot-local-storage). They need to be installed and started before SOFT-IoT-Semantic-Enrichment.
+bundle:install mvn:com.github.andrewoma.dexx/collection/0.6
+bundle:install mvn:com.github.jsonld-java/jsonld-java/0.8.2
+bundle:install mvn:com.fasterxml.jackson.core/jackson-core/2.7.3
+bundle:install mvn:com.fasterxml.jackson.core/jackson-databind/2.7.3
+bundle:install mvn:com.fasterxml.jackson.core/jackson-annotations/2.7.3
+bundle:install mvn:org.apache.httpcomponents/httpcore-osgi/4.4.4
+bundle:install mvn:org.apache.httpcomponents/httpclient-osgi/4.5.2
+bundle:install mvn:org.apache.commons/commons-csv/1.2
+bundle:install mvn:org.apache.commons/commons-lang3/3.4
+bundle:install mvn:org.apache.thrift/libthrift/0.9.3
+bundle:install mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/2.11.0_1
+bundle:install mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlresolver/1.2_5
 
-To install this bundle using our custom maven support execute the following commands in Karaf Shell:
+```
+After the installation of all Jena 3.1.0 you should install the proper Jena:
+```
+bundle:install mvn:org.apache.jena/jena-osgi/3.1.0
+```
+soft-iot-semantic-enrichment also depends of modules [soft-iot-mapping-devices](https://github.com/WiserUFBA/soft-iot-mapping-devices) and [soft-iot-local-storage](https://github.com/WiserUFBA/soft-iot-local-storage). They need to be installed and started before SOFT-IoT-Semantic-Enrichment.
+
+Then, in order to install soft-iot-semantic-enrichment using our custom maven support execute the following commands in Karaf Shell:
 
 ```sh
 config:edit org.ops4j.pax.url.mvn 
